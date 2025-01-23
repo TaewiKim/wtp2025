@@ -1,0 +1,214 @@
+/* 기본 리셋 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+    display: flex;
+    min-height: 100vh;
+    color: #fff;
+    background-color: #343541; /* 메인 배경(다크) */
+}
+
+/* 좌측 사이드바 */
+.sidebar {
+    width: 240px;
+    background-color: #202123;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* 사이드바 상단 */
+.sidebar-header {
+    border-bottom: 1px solid #2f3031;
+    padding: 1rem;
+    text-align: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* 사이드바 네비게이션 */
+.nav ul {
+    list-style-type: none;
+}
+
+.nav li {
+    border-bottom: 1px solid #2f3031;
+}
+
+.nav li a {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: #a9a9b3;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.nav li.active a,
+.nav li a:hover {
+    background-color: #35363a;
+    color: #fff;
+}
+
+/* 사이드바 하단 */
+.sidebar-footer {
+    border-top: 1px solid #2f3031;
+    padding: 1rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.user-info img {
+    border-radius: 50%;
+}
+
+/* 메인 채팅 영역 */
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%; /* 가로폭 전체 */
+    margin: 0; /* 불필요한 기본 margin 제거 */
+}
+
+/* 상단 헤더(옵션) */
+.chat-header {
+    width: 100%;
+    background-color: #343541;
+    padding: 1rem;
+    border-bottom: 1px solid #474955;
+}
+
+.chat-header h1 {
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+/* 채팅 메시지 영역 */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    align-items: center;
+    gap: 1rem;
+    width: 100%; /* 브라우저 창이 작아지면 100%로 줄어듦 */
+    max-width: 1000px; /* 브라우저 창이 넓어도 최대 1000px까지만 확장 */
+    margin: 0 auto; /* 가로 가운데 정렬 */
+}
+
+/* 메시지 공통 스타일 */
+.message {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.message-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.message-content {
+    max-width: 70%;
+    background-color: #444654; /* 기본 메시지 배경 */
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+}
+
+.message-author {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.message-text {
+    white-space: pre-wrap;
+    line-height: 1.4;
+    color: #f7f7f8;
+}
+
+/* Bot 메시지(왼쪽) */
+.message.bot .message-avatar img {
+    background-color: #10a37f; /* ChatGPT 로고 색 근접 */
+}
+
+.message.bot .message-content {
+    background-color: #444654; /* ChatGPT가 주로 사용하는 짙은 컬러 */
+}
+
+/* User 메시지(오른쪽) */
+.message.user {
+    flex-direction: row-reverse;
+}
+
+.message.user .message-content {
+    background-color: #3e3f4b; /* 사용자의 메시지와 Bot 메시지 구분용 */
+}
+
+/* 입력 영역 */
+.chat-input {
+    border-top: 1px solid #474955;
+    padding: 1rem;
+    background-color: #343541;
+    display: flex;
+    gap: 0.5rem;
+    height: 150px;
+}
+
+.chat-input textarea {
+    flex: 1;
+    resize: none;
+    border: 1px solid #474955;
+    background-color: #3e3f4b;
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.95rem;
+    color: #fff;
+    outline: none;
+}
+
+.chat-input textarea::placeholder {
+    color: #b3b3ba;
+}
+
+.chat-input button {
+    background-color: #10a37f;
+    border: none;
+    color: #fff;
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.chat-input button:hover {
+    background-color: #0d8b6d;
+}
+
+/* 스크롤바 스타일 (옵션) */
+.chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #2f3031;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background-color: #474955;
+    border-radius: 4px;
+}
