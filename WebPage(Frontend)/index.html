@@ -1,175 +1,168 @@
 <!DOCTYPE html>
 <html lang="ko">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Brain Storming Web Service</title>
-        <!-- styles.css는 그대로 사용한다면 link 태그 유지 -->
-        <link rel="stylesheet" href="styles.css" />
-    </head>
-    <body>
-        <!-- 좌측 사이드바 -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <!-- 로고 부분도 SVG로 변경 (예: 텍스트 + 도형) -->
-                <div class="logo">
-                    <svg
-                        width="100"
-                        height="40"
-                        viewBox="0 0 100 40"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <!-- 배경(선택사항) -->
-                        <rect width="100" height="40" fill="#202123" />
-                        <!-- 텍스트 -->
-                        <text
-                            x="50%"
-                            y="50%"
-                            dominant-baseline="middle"
-                            text-anchor="middle"
-                            fill="#ffffff"
-                            font-size="18"
-                            font-weight="bold"
-                            font-family="sans-serif"
-                        >
-                            WTP2025
-                        </text>
-                    </svg>
-                </div>
-            </div>
-            <nav class="nav">
-                <ul>
-                    <li class="active"><a href="#">New Chat</a></li>
-                    <li><a href="#">Examples</a></li>
-                    <li><a href="#">Settings</a></li>
-                </ul>
-            </nav>
-            <div class="sidebar-footer">
-                <div class="user-info">
-                    <!-- 사용자 SVG -->
-                    <svg
-                        width="40"
-                        height="40"
-                        viewBox="0 0 40 40"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <!-- 원형 배경 -->
-                        <circle cx="20" cy="20" r="20" fill="#777777" />
-                        <!-- 가운데 텍스트 -->
-                        <text
-                            x="50%"
-                            y="50%"
-                            text-anchor="middle"
-                            dominant-baseline="middle"
-                            font-size="14"
-                            fill="#ffffff"
-                            font-family="sans-serif"
-                        >
-                            U
-                        </text>
-                    </svg>
-                    <span>사용자</span>
-                </div>
-            </div>
-        </aside>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brain Storming Web Service</title>
+    <!-- styles.css 파일을 사용하신다면, 아래 link 유지 -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- 좌측 사이드바 -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <!-- 로고 부분 (SVG) -->
+        <div class="logo">
+          <svg
+            width="100"
+            height="40"
+            viewBox="0 0 100 40"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="100" height="40" fill="#202123" />
+            <text
+              x="50%"
+              y="50%"
+              dominant-baseline="middle"
+              text-anchor="middle"
+              fill="#ffffff"
+              font-size="18"
+              font-weight="bold"
+              font-family="sans-serif"
+            >
+              WTP2025
+            </text>
+          </svg>
+        </div>
+      </div>
+      <nav class="nav">
+        <ul>
+          <li class="active"><a href="#">New Chat</a></li>
+          <li><a href="#">Examples</a></li>
+          <li><a href="#">Settings</a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <!-- 사용자 SVG -->
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="20" cy="20" r="20" fill="#777777" />
+            <text
+              x="50%"
+              y="50%"
+              text-anchor="middle"
+              dominant-baseline="middle"
+              font-size="14"
+              fill="#ffffff"
+              font-family="sans-serif"
+            >
+              U
+            </text>
+          </svg>
+          <span>사용자</span>
+        </div>
+      </div>
+    </aside>
 
-        <!-- 메인 채팅 영역 -->
-        <main class="chat-container">
-            <!-- 상단 헤더(옵션) -->
-            <header class="chat-header">
-                <!-- 헤더 제목이나 로고 대신에, 드롭다운을 추가 -->
-                <h1>Brain Storming Web Service</h1>
-                <!-- 드롭다운 컨테이너 (스타일 필요 시 CSS 수정) -->
-                <div class="method-dropdown" style="margin-top: 8px">
-                    <label for="brainstorm-methods" style="margin-right: 8px">
-                        Brain Storming Method:
-                    </label>
-                    <select
-                        id="brainstorm-methods"
-                        name="brainstorm-methods"
-                        style="padding: 4px; font-size: 0.95rem"
-                    >
-                        <option value="brainwriting">Brainwriting</option>
-                        <option value="round-robin">Round Robin</option>
-                        <option value="rapid-ideation">Rapid Ideation</option>
-                        <option value="starbursting">Starbursting</option>
-                        <option value="5-whys">The 5 Whys</option>
-                        <option value="6-3-5">6-3-5 Brainwriting</option>
-                    </select>
-                </div>
-            </header>
+    <!-- 메인 채팅 영역 -->
+    <main class="chat-container">
+      <!-- 상단 헤더(옵션) -->
+      <header class="chat-header">
+        <h1>Brain Storming Web Service</h1>
+        <!-- 방법 선택 드롭다운 -->
+        <div class="method-dropdown" style="margin-top: 8px">
+          <label for="brainstorm-methods" style="margin-right: 8px"
+            >Brain Storming Method:</label
+          >
+          <select
+            id="brainstorm-methods"
+            name="brainstorm-methods"
+            style="padding: 4px; font-size: 0.95rem"
+          >
+            <option value="brainwriting">Brainwriting</option>
+            <option value="round-robin">Round Robin</option>
+            <option value="rapid-ideation">Rapid Ideation</option>
+            <option value="starbursting">Starbursting</option>
+            <option value="5-whys">The 5 Whys</option>
+            <option value="6-3-5">6-3-5 Brainwriting</option>
+          </select>
+        </div>
+      </header>
 
-            <!-- 채팅 메시지 영역 -->
-            <section class="chat-messages">
-                <!-- Bot(Message) -->
-                <div class="message bot">
-                    <div class="message-avatar">
-                        <!-- 봇 아바타 SVG -->
-                        <svg
-                            width="40"
-                            height="40"
-                            viewBox="0 0 40 40"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <!-- 원형 배경 (ChatGPT 느낌의 초록색) -->
-                            <circle cx="20" cy="20" r="20" fill="#10a37f" />
-                            <!-- 가운데 텍스트 -->
-                            <text
-                                x="50%"
-                                y="50%"
-                                text-anchor="middle"
-                                dominant-baseline="middle"
-                                font-size="14"
-                                fill="#ffffff"
-                                font-family="sans-serif"
-                            >
-                                AI
-                            </text>
-                        </svg>
-                    </div>
-                    <div class="message-content">
-                        <div class="message-author">ChatGPT</div>
-                        <div class="message-text">안녕하세요! 무엇을 도와드릴까요?</div>
-                    </div>
-                </div>
+      <!-- 채팅 메시지 영역 -->
+      <section class="chat-messages">
+        <!-- Bot(Message) 예시 -->
+        <div class="message bot">
+          <div class="message-avatar">
+            <svg
+              width="40"
+              height="40"
+              viewBox="0 0 40 40"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="20" cy="20" r="20" fill="#10a37f" />
+              <text
+                x="50%"
+                y="50%"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="14"
+                fill="#ffffff"
+                font-family="sans-serif"
+              >
+                AI
+              </text>
+            </svg>
+          </div>
+          <div class="message-content">
+            <div class="message-author">ChatGPT</div>
+            <div class="message-text">안녕하세요! 무엇을 도와드릴까요?</div>
+          </div>
+        </div>
 
-                <!-- User(Message) -->
-                <div class="message user">
-                    <div class="message-avatar">
-                        <!-- 사용자 아바타 SVG (다른 색상 예시) -->
-                        <svg
-                            width="40"
-                            height="40"
-                            viewBox="0 0 40 40"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <!-- 원형 배경 (푸른 계열) -->
-                            <circle cx="20" cy="20" r="20" fill="#317eac" />
-                            <!-- 가운데 텍스트 -->
-                            <text
-                                x="50%"
-                                y="50%"
-                                text-anchor="middle"
-                                dominant-baseline="middle"
-                                font-size="14"
-                                fill="#ffffff"
-                                font-family="sans-serif"
-                            >
-                                Me
-                            </text>
-                        </svg>
-                    </div>
-                    <div class="message-content">
-                        <div class="message-author">사용자</div>
-                        <div class="message-text">인공지능 활용 방법에 대해 알고 싶어!</div>
-                </div>
-            </section>
+        <!-- User(Message) 예시 -->
+        <div class="message user">
+          <div class="message-avatar">
+            <svg
+              width="40"
+              height="40"
+              viewBox="0 0 40 40"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="20" cy="20" r="20" fill="#317eac" />
+              <text
+                x="50%"
+                y="50%"
+                text-anchor="middle"
+                dominant-baseline="middle"
+                font-size="14"
+                fill="#ffffff"
+                font-family="sans-serif"
+              >
+                Me
+              </text>
+            </svg>
+          </div>
+          <div class="message-content">
+            <div class="message-author">사용자</div>
+            <div class="message-text">인공지능 활용 방법에 대해 알고 싶어!</div>
+          </div>
+        </div>
+      </section>
 
-            <!-- 입력 영역 -->
-            <footer class="chat-input">
-                <textarea placeholder="메시지를 입력하세요..."></textarea>
-                <button>전송</button>
-            </footer>
-        </main>
-    </body>
+      <!-- 입력 영역 -->
+      <footer class="chat-input">
+        <textarea placeholder="메시지를 입력하세요..."></textarea>
+        <button>전송</button>
+      </footer>
+    </main>
+
+    <!-- (중요) App.js 스크립트 연결 -->
+    <script src="App.js"></script>
+  </body>
 </html>
