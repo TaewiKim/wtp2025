@@ -1,9 +1,9 @@
 import json
 import http.client
 
-def call_openai_api(prompt, api_key):
+def call_openai_api(messages, api_key):
     """
-    http.client를 사용해 OpenAI API를 호출하고
+    http.client를 사용해 OpenAI API의 ChatCompletion을 호출하고
     결과 텍스트를 반환한다.
     """
     conn = http.client.HTTPSConnection("api.openai.com")
@@ -11,24 +11,22 @@ def call_openai_api(prompt, api_key):
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
     }
+
+    # messages: [{"role": "user"|"assistant", "content": "..."}] 형태
     payload = json.dumps({
-        "model": "gpt-4o-mini",
-        "messages": [{"role": "user", "content": prompt}],  # ChatGPT API 형식
+        "model": "gpt-4o-mini",     # 사용 모델
+        "messages": messages,       # 전체 대화 기록 전달
         "max_tokens": 2000,
         "temperature": 0
     })
 
     try:
-        # 올바른 경로로 POST 요청
         conn.request("POST", "/v1/chat/completions", payload, headers)
         response = conn.getresponse()
         status_code = response.status
         response_data = response.read().decode("utf-8")
 
-        # 응답 데이터를 JSON으로 변환
         data = json.loads(response_data)
-
-        # OpenAI 응답 데이터에서 텍스트 추출
         if "choices" in data and len(data["choices"]) > 0:
             return data["choices"][0]["message"]["content"].strip()
         else:

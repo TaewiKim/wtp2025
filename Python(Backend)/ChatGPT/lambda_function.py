@@ -3,6 +3,7 @@ import json
 import datetime
 import boto3
 from botocore.exceptions import ClientError
+from boto3.dynamodb.conditions import Key
 
 import postToOpenai
 
@@ -18,31 +19,54 @@ def lambda_handler(event, context):
     table_users = dynamo.Table("DynamoDB-Taewi-Brainstorming-UserList")
     table_messages = dynamo.Table("DynamoDB-Taewi-Brainstorming-ChatHistory")
 
-    # SQS 이벤트 레코드를 순회
     for record in event["Records"]:
         # 1) 메시지 파싱
         msg_body = json.loads(record["body"])
         room_id = msg_body.get("RoomID")
         user_name = msg_body.get("Name")
-        prompt = msg_body.get("Message", "")
+        user_message_content = msg_body.get("Message", "")
 
-        # 현재 시간 생성
+        # 현재 시간 생성 (ISO 8601 형식, 마이크로초 포함)
         now = datetime.datetime.now()
-
-        # ISO 8601 형식으로 변환 (마이크로초 포함)
         timestamp_str = now.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
 
-        # 2) OpenAI API 호출 (postToOpenai.py 참고)
-        # 환경변수에 저장된 키를 사용
+        # 2) DynamoDB에서 해당 Room의 최근 10개 메시지를 가져오기
+        try:
+            response = table_messages.query(
+                KeyConditionExpression=Key("RoomID").eq(room_id),
+                ScanIndexForward=False,  # 최신순 정렬
+                Limit=10                 # 최대 10개만
+            )
+            recent_items = response.get("Items", [])
+        except ClientError as e:
+            print(f"[Error] query table_messages failed: {e}")
+            recent_items = []
+
+        # 가져온 메시지를 시간 오름차순으로 재정렬 (과거 -> 최신)
+        recent_items_sorted = sorted(recent_items, key=lambda x: x["Timestamp"])
+
+        # 3) ChatGPT 형식으로 메시지 변환
+        #    - UserID == "chatgpt" 인 경우 role="assistant"
+        #    - 그렇지 않은 경우 role="user"
+        conversation = []
+        for item in recent_items_sorted:
+            role = "assistant" if item["UserID"] == "chatgpt" else "user"
+            content = item["Message"]
+            conversation.append({"role": role, "content": content})
+
+        # 이번에 들어온 사용자 메시지도 대화에 추가
+        conversation.append({"role": "user", "content": user_message_content})
+
+        # 4) OpenAI API 호출
         api_key = os.environ.get("OPENAI_APIKEY")
         try:
-            chat_response = postToOpenai.call_openai_api(prompt, api_key)
+            chat_response = postToOpenai.call_openai_api(conversation, api_key)
             print(chat_response)
         except Exception as e:
             print("[Error] call_openai_api failed:", e)
             chat_response = f"Error: {str(e)}"
 
-        # 3) 결과를 DynamoDB에 저장
+        # 5) 결과(챗봇의 답변)를 DynamoDB에 저장
         item = {
             "RoomID": room_id,
             "Timestamp": timestamp_str,
@@ -55,7 +79,7 @@ def lambda_handler(event, context):
         except ClientError as e:
             print(f"[Error] put_item in table_messages failed: {e}")
 
-        # 4) WebSocket 브로드캐스트
+        # 6) WebSocket 브로드캐스트
         try:
             users = table_users.query(
                 IndexName="RoomID-UserID-index",
@@ -72,15 +96,14 @@ def lambda_handler(event, context):
                         Data=json.dumps(item)
                     )
                 except ClientError as e:
-                    # 연결 끊긴 유저 → DynamoDB 제거
+                    # 연결 끊긴 유저 → DynamoDB에서 제거
                     if e.response["Error"]["Code"] == "GoneException":
-                        table_users.delete_item(Key={"connection_id": connection_id})
+                        table_users.delete_item(Key={"ConnectionID": connection_id})
                     else:
                         print("[Error] post_to_connection failed:", e)
         except ClientError as e:
             print("[Error] query userList failed:", e)
 
-    # SQS 메시지는 Lambda 종료 후 자동 삭제(혹은 Visibility Timeout 만료 시 재시도)
     return {
         "statusCode": 200,
         "body": json.dumps("SQS batch processed.")
