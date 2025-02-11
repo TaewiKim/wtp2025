@@ -4,19 +4,28 @@ import json
 dynamo = boto3.client('dynamodb')
 table_name = 'DynamoDB-Taewi-CRUD'
 
-def respond(err, res=None):
+def respond(err, res=None, is_options=False):
     return {
-        'statusCode': '400' if err else '200',
-        'body': str(err) if err else json.dumps(res),
+        'statusCode': '200' if is_options else ('400' if err else '200'),
+        'body': json.dumps("CORS preflight successful") if is_options else (str(err) if err else json.dumps(res)),
         'headers': {
             'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',  # 모든 도메인 허용
+            'Access-Control-Allow-Methods': 'OPTIONS, POST, GET, PUT, DELETE',  # 허용할 HTTP 메서드
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',  # 필요한 경우 확장 가능
+            'Access-Control-Max-Age': '3600',  # Preflight 요청 캐시 (1시간)
         },
     }
 
 def lambda_handler(event, context):
-    print("Received event:", json.dumps(event))  # 🔍 이벤트 로그 출력
+    print("Received event:", json.dumps(event, indent=4))  # 전체 이벤트 로그 출력
 
-    # ✅ HTTP Method 추출 (REST API & HTTP API 지원)
+    # ✅ OPTIONS 요청 처리 (CORS Preflight 요청)
+    if event.get("httpMethod") == "OPTIONS":
+        print("Handling OPTIONS request for CORS Preflight")  # 로그 추가
+        return respond(None, is_options=True)
+
+    # ✅ HTTP Method 추출
     operation = event.get("httpMethod") or event.get("requestContext", {}).get("http", {}).get("method")
 
     if not operation:
@@ -33,6 +42,8 @@ def lambda_handler(event, context):
     # ✅ HTTP 메서드 확인
     if operation in operations:
         try:
+            body = json.loads(event.get('body', '{}'))
+
             if operation == 'GET':
                 if "queryStringParameters" not in event or event["queryStringParameters"] is None:
                     return respond(ValueError("Missing 'Key' in queryStringParameters"))
@@ -41,7 +52,6 @@ def lambda_handler(event, context):
                 payload = {'TableName': table_name, 'Key': key}
 
             elif operation == 'DELETE':
-                body = json.loads(event['body'])
                 if "Key" not in body:
                     return respond(ValueError("Missing 'Key' in request body"))
 
@@ -49,7 +59,6 @@ def lambda_handler(event, context):
                 payload = {'TableName': table_name, 'Key': key}
 
             elif operation == 'POST':
-                body = json.loads(event['body'])
                 if "Item" not in body:
                     return respond(ValueError("Missing 'Item' in request body"))
 
@@ -57,7 +66,6 @@ def lambda_handler(event, context):
                 payload = {'TableName': table_name, 'Item': item}
 
             elif operation == 'PUT':
-                body = json.loads(event['body'])
                 if "Key" not in body or "UpdateExpression" not in body:
                     return respond(ValueError("Missing 'Key' or 'UpdateExpression' in request body"))
 
