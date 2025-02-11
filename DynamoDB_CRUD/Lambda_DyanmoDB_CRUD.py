@@ -12,21 +12,20 @@ def respond(err, res=None, is_options=False):
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',  # 모든 도메인 허용
             'Access-Control-Allow-Methods': 'OPTIONS, POST, GET, PUT, DELETE',  # 허용할 HTTP 메서드
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',  # 필요한 경우 확장 가능
-            'Access-Control-Max-Age': '3600',  # Preflight 요청 캐시 (1시간)
+            'Access-Control-Allow-Headers': 'Content-Type',  # 필요한 경우 확장 가능
         },
     }
 
 def lambda_handler(event, context):
     print("Received event:", json.dumps(event, indent=4))  # 전체 이벤트 로그 출력
 
-    # ✅ OPTIONS 요청 처리 (CORS Preflight 요청)
-    if event.get("httpMethod") == "OPTIONS":
-        print("Handling OPTIONS request for CORS Preflight")  # 로그 추가
-        return respond(None, is_options=True)
-
     # ✅ HTTP Method 추출
     operation = event.get("httpMethod") or event.get("requestContext", {}).get("http", {}).get("method")
+
+    # ✅ OPTIONS 요청 처리 (CORS Preflight 요청)
+    if operation == "OPTIONS":
+        print("Handling OPTIONS request for CORS Preflight")  # 로그 추가
+        return respond(None, is_options=True)
 
     if not operation:
         return respond(ValueError("Missing 'httpMethod' in event"))
